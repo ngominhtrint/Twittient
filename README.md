@@ -34,7 +34,6 @@ Please list two areas of the assignment you'd like to **discuss further with you
 1. Twitter text overlap on the profile image, what I tried to fix but can't solve
 2. Missing the compose a new tweet function (will update in 24 hours)
 3. Missing the like/unlike, retweet function (will update in 24 hours)
-4. Take much time to explore Twitter Api
 
 ## Video Walkthrough
 
@@ -47,6 +46,7 @@ GIF created with [LiceCap](http://www.cockos.com/licecap/).
 ## Notes
 
 Describe any challenges encountered while building the app.
+1. Take much time to explore Twitter Api
 
 ## License
 
