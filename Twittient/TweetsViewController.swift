@@ -16,6 +16,9 @@ class TweetsViewController: UIViewController {
     var tweets: [Tweet]!
     var isFirstLoading : Bool = true
     var refreshControl : UIRefreshControl!
+    var isLoading: Bool = false
+    var page: Int = 1
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -28,26 +31,59 @@ class TweetsViewController: UIViewController {
         tableView.estimatedRowHeight = 300
         tableView.rowHeight = UITableViewAutomaticDimension
         
+        // load more footer
+        let tableFooterView: UIView = UIView(frame: CGRectMake(0, 0, 320, 50))
+        let loadingView: UIActivityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
+        loadingView.startAnimating()
+        loadingView.center = tableFooterView.center
+        tableFooterView.addSubview(loadingView)
+        self.tableView.tableFooterView = tableFooterView
+        
         dispatch_async(dispatch_get_main_queue()) {
             self.loadDataFromNetwork(self.refreshControl)
         }
     }
     
-    func loadDataFromNetwork(refreshControl: UIRefreshControl) {
+    func loadDataFromNetwork(refreshControl: UIRefreshControl? = nil) {
         if isFirstLoading {
             MBProgressHUD.showHUDAddedTo(self.view, animated: true)
             isFirstLoading = false
         }
         
-        TwitterClient.shareInstance.homeTimeLine({ (tweets:[Tweet]) -> () in
-            self.tweets = tweets
+        if refreshControl != nil {
+            page = 1
+            refreshControl!.beginRefreshing()
+        }
+        
+        print("page: \(page)")
+        
+        TwitterClient.shareInstance.homeTimeLine(page, success: { (tweets:[Tweet]) -> () in
+            self.isLoading = false
+            if self.tweets == nil {
+                self.tweets = []
+            }
+            
+            if self.page == 1 {
+                self.tweets = []
+                self.tweets = tweets
+            }else{
+                self.tweets = self.tweets! + Array(tweets)
+            }
+
             self.tableView.reloadData()
             MBProgressHUD.hideHUDForView(self.view, animated: true)
-            refreshControl.endRefreshing()
+            self.tableView.tableFooterView = nil
+            if refreshControl != nil {
+                refreshControl!.endRefreshing()
+            }
         }) { (error:NSError) -> () in
             print(error.localizedDescription)
+            self.isLoading = false
             MBProgressHUD.hideHUDForView(self.view, animated: true)
-            refreshControl.endRefreshing()
+            self.tableView.tableFooterView = nil
+            if refreshControl != nil {
+                refreshControl!.endRefreshing()
+            }
         }
     }
 
@@ -116,6 +152,14 @@ extension TweetsViewController: UITableViewDelegate, UITableViewDataSource, Twee
         } else {
             let image = UIImage(named: "unlike.png")! as UIImage
             cell.likeButton.setImage(image, forState: .Normal)
+        }
+        
+        if (indexPath.row == (tweets!.count) - 1 && !isLoading){
+            isLoading = true
+            page++
+            dispatch_async(dispatch_get_main_queue()) {
+                self.loadDataFromNetwork()
+            }
         }
         
         return cell

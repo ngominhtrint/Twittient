@@ -59,8 +59,9 @@ class TwitterClient: BDBOAuth1SessionManager {
 
     }
     
-    func homeTimeLine(success: ([Tweet]) -> (), failure: (NSError) -> ()){
-        GET("1.1/statuses/home_timeline.json", parameters: nil, progress: nil, success: { (task: NSURLSessionDataTask, response: AnyObject?) -> Void in
+    func homeTimeLine(page: Int, success: ([Tweet]) -> (), failure: (NSError) -> ()){
+        let itemPaging = page * 20
+        GET("1.1/statuses/home_timeline.json?count=\(itemPaging)", parameters: nil, progress: nil, success: { (task: NSURLSessionDataTask, response: AnyObject?) -> Void in
             let dictionaries = response as! [NSDictionary]
             let tweets = Tweet.tweetsWithArray(dictionaries)
             success(tweets)
