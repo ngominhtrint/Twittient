@@ -59,6 +59,18 @@ class TwitterClient: BDBOAuth1SessionManager {
 
     }
     
+    func statusUpdate(status: String, success: ([Tweet]) -> (), failure: (NSError) -> ()){
+        let parameter = ["status":status]
+        
+        POST("1.1/statuses/update.json?", parameters: parameter, progress: nil, success: { (task: NSURLSessionDataTask, response: AnyObject?) -> Void in
+                print("\(response)")
+            }, failure: { (task: NSURLSessionDataTask?, error: NSError) -> Void in
+                print("\(error)")
+        })
+    
+    }
+    
+    
     func homeTimeLine(page: Int, success: ([Tweet]) -> (), failure: (NSError) -> ()){
         let itemPaging = page * 20
         GET("1.1/statuses/home_timeline.json?count=\(itemPaging)", parameters: nil, progress: nil, success: { (task: NSURLSessionDataTask, response: AnyObject?) -> Void in
@@ -68,7 +80,7 @@ class TwitterClient: BDBOAuth1SessionManager {
         }, failure: { (task: NSURLSessionDataTask?, error: NSError) -> Void in
             failure(error)
         })
-        
+
     }
     
     func currentAccount(success: (User) -> (), failure: (NSError) -> ()){

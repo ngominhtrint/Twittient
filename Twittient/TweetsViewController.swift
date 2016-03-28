@@ -28,7 +28,7 @@ class TweetsViewController: UIViewController {
         
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.estimatedRowHeight = 300
+        tableView.estimatedRowHeight = 100
         tableView.rowHeight = UITableViewAutomaticDimension
         
         // load more footer
@@ -141,9 +141,9 @@ extension TweetsViewController: UITableViewDelegate, UITableViewDataSource, Twee
         
         cell.avatarImageView.setImageWithURL(tweet.profileImageUrl!)
         cell.nameLabel.text = tweet.name as? String
-        cell.tagLabel.text = "@\(tweet.screenName as! String)"
+        cell.tagLabel.text = tweet.screenName as? String
         cell.timeAgoLabel.text = timeAgoSince(tweet.timeStamp!)
-        cell.descriptionLabel.text = "\(tweet.text)"
+        cell.descriptionLabel.text = tweet.text as? String
         
         let isFavorited = tweet.favorited
         if isFavorited {

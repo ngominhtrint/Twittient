@@ -48,6 +48,7 @@ GIF created with [LiceCap](http://www.cockos.com/licecap/).
 Describe any challenges encountered while building the app.
 
 1. Take much time to explore Twitter Api
+2. 401 unauthorized error when use POST request
 
 ## License
 

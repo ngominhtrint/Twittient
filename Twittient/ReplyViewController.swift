@@ -33,9 +33,16 @@ class ReplyViewController: UIViewController, UITextFieldDelegate {
     }
     
     @IBAction func onTweetClicked(sender: UIBarButtonItem) {
-        clearTweetMessage()
         
-        // post reply message
+//        let status = replyTextField.text
+//        
+//        TwitterClient.shareInstance.statusUpdate(status!, success: { (tweet:[Tweet]) -> () in
+//                print("Tweet: \(tweet)")
+//            }) { (error: NSError) -> () in
+//                print("Error: \(error)")
+//        }
+        
+        clearTweetMessage()
     }
     
     @IBAction func onCancelClicked(sender: AnyObject) {
