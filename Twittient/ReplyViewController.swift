@@ -16,6 +16,8 @@ class ReplyViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var replyTextField: UITextField!
     
     var tweet: Tweet?
+    var isReplyMessage: Bool = false
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -31,6 +33,10 @@ class ReplyViewController: UIViewController, UITextFieldDelegate {
             tagLabel.text = User.currentUser?.screenName as? String
             avatarImage.setImageWithURL((User.currentUser?.profileUrl)!)
         }
+        
+        if isReplyMessage {
+            replyTextField.text = "@\(tweet?.screenName as! String) "
+        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -39,13 +45,26 @@ class ReplyViewController: UIViewController, UITextFieldDelegate {
     }
     
     @IBAction func onTweetClicked(sender: UIBarButtonItem) {
-        
+
         let status = replyTextField.text
+        var id: String  = ""
         
-        TwitterClient.shareInstance.statusUpdate(status!, success: { (tweet:[Tweet]) -> () in
+        if tweet!.id != nil {
+            id = tweet!.id as! String
+        }
+
+        if isReplyMessage {
+            TwitterClient.shareInstance.statusUpdate(status!, inReplyToStatusId: id, success: { (tweet:[Tweet]) -> () in
+                print("Tweet: \(tweet)")
+                }) { (error: NSError) -> () in
+                    print("Error: \(error)")
+            }
+        } else {
+            TwitterClient.shareInstance.statusUpdate(status!, success: { (tweet:[Tweet]) -> () in
                 print("Tweet: \(tweet)")
             }) { (error: NSError) -> () in
                 print("Error: \(error)")
+            }
         }
         
         clearTweetMessage()

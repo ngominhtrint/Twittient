@@ -10,6 +10,7 @@ import UIKit
 
 class Tweet: NSObject {
     
+    var id: NSString?
     var text: NSString?
     var timeStamp: NSDate?
     var retweetCount: Int = 0
@@ -18,16 +19,18 @@ class Tweet: NSObject {
     var name: NSString?
     var screenName: NSString?
     var favorited: Bool = false
+    var inReplyToUserId: NSString?
     
     override init() {
         
     }
     
     init(dictionary: NSDictionary){
+        id = dictionary["id_str"] as? String
         text = dictionary["text"] as? String
         
         retweetCount = (dictionary["retweet_count"] as? Int) ?? 0
-        favoritesCount = (dictionary["favourites_count"] as? Int) ?? 0
+        favoritesCount = (dictionary["favorite_count"] as? Int) ?? 0
         
         let timeStampString = dictionary["created_at"] as? String
         if let timeStampString = timeStampString {
@@ -37,6 +40,7 @@ class Tweet: NSObject {
         }
         
         favorited = (dictionary["favorited"] as? Bool)!
+        inReplyToUserId = dictionary["in_reply_to_user_id"] as? String
         
         let user = User.init(dictionary: dictionary["user"] as! NSDictionary)
         profileImageUrl = user.profileUrl

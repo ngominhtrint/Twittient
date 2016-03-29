@@ -59,8 +59,13 @@ class TwitterClient: BDBOAuth1SessionManager {
 
     }
     
-    func statusUpdate(status: String, success: ([Tweet]) -> (), failure: (NSError) -> ()){
-        let parameter = ["status":status]
+    
+    // new tweet
+    func statusUpdate(status: String, inReplyToStatusId: String? = nil, success: ([Tweet]) -> (), failure: (NSError) -> ()){
+        let parameter = ["status":status,
+            "in_reply_to_user_id": inReplyToStatusId == nil ? "" : inReplyToStatusId! as String]
+        
+        print("\(parameter)")
         
         POST("1.1/statuses/update.json", parameters: parameter, progress: nil, success: { (task: NSURLSessionDataTask, response: AnyObject?) -> Void in
                 print("\(response)")
@@ -70,6 +75,15 @@ class TwitterClient: BDBOAuth1SessionManager {
     
     }
     
+    // reply tweet
+    func statusRetweet(id: String, status: String, success: ([Tweet]) -> (), failure: (NSError) -> ()){
+        POST("1.1/statuses/retweet/\(id).json", parameters: nil, progress: nil, success: { (task: NSURLSessionDataTask, response: AnyObject?) -> Void in
+            print("\(response)")
+        }, failure: { (task: NSURLSessionDataTask?, error: NSError) -> Void in
+            print("\(error)")
+        })
+        
+    }
     
     func homeTimeLine(page: Int, success: ([Tweet]) -> (), failure: (NSError) -> ()){
         let itemPaging = page * 20

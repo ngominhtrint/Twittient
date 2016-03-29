@@ -87,6 +87,8 @@ class TweetDetailViewController: UIViewController {
 
         let replyViewController = segue.destinationViewController as! ReplyViewController
         replyViewController.tweet = self.tweet
+        replyViewController.isReplyMessage = true
+        print("Reply Tweet")
     }
 
 
