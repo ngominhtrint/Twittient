@@ -116,12 +116,15 @@ class TweetsViewController: UIViewController {
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         
-        let cell = sender as! UITableViewCell
-        let indexPath = tableView.indexPathForCell(cell)
-        let tweet = tweets[indexPath!.row]
-        
-        let tweetDetailViewController = segue.destinationViewController as! TweetDetailViewController
-        tweetDetailViewController.tweet = tweet
+
+        if segue.identifier == "TweetCellSegue" {
+            let cell = sender as! UITableViewCell
+            let indexPath = tableView.indexPathForCell(cell)
+            let tweet = tweets[indexPath!.row]
+            
+            let tweetDetailViewController = segue.destinationViewController as! TweetDetailViewController
+            tweetDetailViewController.tweet = tweet
+        }
     }
 
 }
@@ -139,19 +142,19 @@ extension TweetsViewController: UITableViewDelegate, UITableViewDataSource, Twee
         
         let tweet = tweets[indexPath.row]
         
-        cell.avatarImageView.setImageWithURL(tweet.profileImageUrl!)
-        cell.nameLabel.text = tweet.name as? String
-        cell.tagLabel.text = tweet.screenName as? String
-        cell.timeAgoLabel.text = timeAgoSince(tweet.timeStamp!)
-        cell.descriptionLabel.text = tweet.text as? String
-        
+        cell.avatar.setImageWithURL(tweet.profileImageUrl!)
+        cell.name.text = tweet.name as? String
+        cell.descLabel.text = tweet.text as? String
+        cell.screenNameLabel.text = tweet.screenName as? String
+        cell.timeagoLabel.text = timeAgoSince(tweet.timeStamp!)
+             
         let isFavorited = tweet.favorited
         if isFavorited {
             let image = UIImage(named: "like.png")! as UIImage
-            cell.likeButton.setImage(image, forState: .Normal)
+            cell.favoriteButton.setImage(image, forState: .Normal)
         } else {
             let image = UIImage(named: "unlike.png")! as UIImage
-            cell.likeButton.setImage(image, forState: .Normal)
+            cell.favoriteButton.setImage(image, forState: .Normal)
         }
         
         if (indexPath.row == (tweets!.count) - 1 && !isLoading){

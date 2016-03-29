@@ -22,9 +22,15 @@ class ReplyViewController: UIViewController, UITextFieldDelegate {
         replyTextField.delegate = self
         replyTextField.becomeFirstResponder()
         
-        nameLabel.text = "\(tweet!.name)"
-        tagLabel.text = "\(tweet!.screenName)"
-        avatarImage.setImageWithURL(tweet!.profileImageUrl!)
+        if tweet != nil {
+            nameLabel.text = tweet!.name as? String
+            tagLabel.text = tweet!.screenName as? String
+            avatarImage.setImageWithURL(tweet!.profileImageUrl!)
+        } else {
+            nameLabel.text = User.currentUser?.name as? String
+            tagLabel.text = User.currentUser?.screenName as? String
+            avatarImage.setImageWithURL((User.currentUser?.profileUrl)!)
+        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -34,13 +40,13 @@ class ReplyViewController: UIViewController, UITextFieldDelegate {
     
     @IBAction func onTweetClicked(sender: UIBarButtonItem) {
         
-//        let status = replyTextField.text
-//        
-//        TwitterClient.shareInstance.statusUpdate(status!, success: { (tweet:[Tweet]) -> () in
-//                print("Tweet: \(tweet)")
-//            }) { (error: NSError) -> () in
-//                print("Error: \(error)")
-//        }
+        let status = replyTextField.text
+        
+        TwitterClient.shareInstance.statusUpdate(status!, success: { (tweet:[Tweet]) -> () in
+                print("Tweet: \(tweet)")
+            }) { (error: NSError) -> () in
+                print("Error: \(error)")
+        }
         
         clearTweetMessage()
     }

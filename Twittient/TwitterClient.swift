@@ -20,8 +20,8 @@ class TwitterClient: BDBOAuth1SessionManager {
         loginSuccess = success
         loginFailure = failure
         
-        TwitterClient.shareInstance.deauthorize()
-        TwitterClient.shareInstance.fetchRequestTokenWithPath("oauth/request_token", method: "GET", callbackURL: NSURL(string: "twittient://oauth"), scope: nil, success: {(requestToken: BDBOAuth1Credential!) -> Void in
+        self.deauthorize()
+        self.fetchRequestTokenWithPath("oauth/request_token", method: "GET", callbackURL: NSURL(string: "twittient://oauth"), scope: nil, success: {(requestToken: BDBOAuth1Credential!) -> Void in
             print("I got a token")
             
             let url = NSURL(string: "https://api.twitter.com/oauth/authorize?oauth_token=\(requestToken.token)")
@@ -45,7 +45,7 @@ class TwitterClient: BDBOAuth1SessionManager {
         let requestToken = BDBOAuth1Credential(queryString: url.query)
         fetchAccessTokenWithPath("oauth/access_token", method: "POST", requestToken: requestToken, success: {(accessToken: BDBOAuth1Credential!) -> Void in
             print("I got an access token")
-            
+            self.requestSerializer.saveAccessToken(accessToken)
             self.currentAccount({ (user: User) -> () in
                     User.currentUser = user
                     self.loginSuccess?()
@@ -62,7 +62,7 @@ class TwitterClient: BDBOAuth1SessionManager {
     func statusUpdate(status: String, success: ([Tweet]) -> (), failure: (NSError) -> ()){
         let parameter = ["status":status]
         
-        POST("1.1/statuses/update.json?", parameters: parameter, progress: nil, success: { (task: NSURLSessionDataTask, response: AnyObject?) -> Void in
+        POST("1.1/statuses/update.json", parameters: parameter, progress: nil, success: { (task: NSURLSessionDataTask, response: AnyObject?) -> Void in
                 print("\(response)")
             }, failure: { (task: NSURLSessionDataTask?, error: NSError) -> Void in
                 print("\(error)")
@@ -73,7 +73,10 @@ class TwitterClient: BDBOAuth1SessionManager {
     
     func homeTimeLine(page: Int, success: ([Tweet]) -> (), failure: (NSError) -> ()){
         let itemPaging = page * 20
-        GET("1.1/statuses/home_timeline.json?count=\(itemPaging)", parameters: nil, progress: nil, success: { (task: NSURLSessionDataTask, response: AnyObject?) -> Void in
+        let params = [
+            "count": itemPaging
+        ]
+        GET("1.1/statuses/home_timeline.json", parameters: params, progress: nil, success: { (task: NSURLSessionDataTask, response: AnyObject?) -> Void in
             let dictionaries = response as! [NSDictionary]
             let tweets = Tweet.tweetsWithArray(dictionaries)
             success(tweets)
