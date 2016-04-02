@@ -160,6 +160,15 @@ extension TweetsViewController: UITableViewDelegate, UITableViewDataSource, Twee
             cell.favoriteButton.setImage(image, forState: .Normal)
         }
         
+        let isRetweeted = tweet.retweeted
+        if isRetweeted {
+            let image = UIImage(named: "retweeted.png")! as UIImage
+            cell.retweetButton.setImage(image, forState: .Normal)
+        } else {
+            let image = UIImage(named: "retweet.png")! as UIImage
+            cell.retweetButton.setImage(image, forState: .Normal)
+        }
+        
         if (indexPath.row == (tweets!.count) - 1 && !isLoading){
             isLoading = true
             page++

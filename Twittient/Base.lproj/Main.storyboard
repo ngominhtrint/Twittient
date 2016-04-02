@@ -178,6 +178,7 @@
                                             <outlet property="descLabel" destination="wbm-9Y-SCn" id="Des-79-au3"/>
                                             <outlet property="favoriteButton" destination="zbs-5O-5je" id="3eH-mg-Vkt"/>
                                             <outlet property="name" destination="esl-Nv-VWu" id="uIc-Gc-bq0"/>
+                                            <outlet property="retweetButton" destination="FdF-14-mxB" id="ZZS-JF-9HT"/>
                                             <outlet property="screenNameLabel" destination="3WX-JR-PNA" id="fFt-xr-LTW"/>
                                             <outlet property="timeagoLabel" destination="rHo-cA-cmK" id="KNA-Ez-HAE"/>
                                             <segue destination="Pvl-lU-5At" kind="push" identifier="TweetCellSegue" id="Y2b-Hf-Y61"/>
@@ -334,6 +335,7 @@
                                 <state key="normal" title="Button" image="reply"/>
                                 <connections>
                                     <action selector="onReplyClicked:" destination="Pvl-lU-5At" eventType="touchUpInside" id="98U-gI-8ar"/>
+                                    <segue destination="Uv2-z4-uDn" kind="push" id="VPg-0g-Itn"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="agO-Rs-DAj">
@@ -439,6 +441,7 @@
                         <outlet property="nameLabel" destination="RKb-i5-PRn" id="Fkr-PD-sHs"/>
                         <outlet property="numberFavoritesLabel" destination="MG8-Jk-Gke" id="EGA-CE-uUQ"/>
                         <outlet property="numberRetweetLabel" destination="zM8-7h-Isi" id="k4g-hI-eU8"/>
+                        <outlet property="retweetButton" destination="agO-Rs-DAj" id="b4W-XP-NPx"/>
                         <outlet property="retweetUserLabel" destination="RIP-97-bKC" id="pTZ-QP-zct"/>
                         <outlet property="tagLabel" destination="ckW-Vo-b3M" id="a2C-NU-PyU"/>
                         <outlet property="timeStampLabel" destination="4hP-uU-jtN" id="uOn-cQ-U7G"/>

@@ -24,6 +24,12 @@ class ReplyViewController: UIViewController, UITextFieldDelegate {
         replyTextField.delegate = self
         replyTextField.becomeFirstResponder()
         
+        avatarImage.layer.cornerRadius = 3.0
+        
+        showData()
+    }
+
+    func showData() {
         if tweet != nil {
             nameLabel.text = tweet!.name as? String
             tagLabel.text = tweet!.screenName as? String
@@ -38,7 +44,7 @@ class ReplyViewController: UIViewController, UITextFieldDelegate {
             replyTextField.text = "@\(tweet?.screenName as! String) "
         }
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -47,20 +53,19 @@ class ReplyViewController: UIViewController, UITextFieldDelegate {
     @IBAction func onTweetClicked(sender: UIBarButtonItem) {
 
         let status = replyTextField.text
-        var id: String  = ""
-        
-        if tweet!.id != nil {
-            id = tweet!.id as! String
-        }
 
         if isReplyMessage {
-            TwitterClient.shareInstance.statusUpdate(status!, inReplyToStatusId: id, success: { (tweet:[Tweet]) -> () in
+            var id: String  = ""
+            if tweet!.id != nil {
+                id = tweet!.id as! String
+            }
+            TwitterClient.shareInstance.statusUpdate(status!, inReplyToStatusId: id, success: { (tweet:Tweet) -> () in
                 print("Tweet: \(tweet)")
                 }) { (error: NSError) -> () in
                     print("Error: \(error)")
             }
         } else {
-            TwitterClient.shareInstance.statusUpdate(status!, success: { (tweet:[Tweet]) -> () in
+            TwitterClient.shareInstance.statusUpdate(status!, success: { (tweet:Tweet) -> () in
                 print("Tweet: \(tweet)")
             }) { (error: NSError) -> () in
                 print("Error: \(error)")
@@ -68,14 +73,19 @@ class ReplyViewController: UIViewController, UITextFieldDelegate {
         }
         
         clearTweetMessage()
+        goBack()
     }
     
     @IBAction func onCancelClicked(sender: AnyObject) {
         navigationController?.popViewControllerAnimated(true)
     }
     
-    func clearTweetMessage(){
+    func clearTweetMessage() {
         replyTextField.text = ""
+    }
+    
+    func goBack() {
+        navigationController?.popViewControllerAnimated(true)
     }
     
     /*

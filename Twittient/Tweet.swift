@@ -19,6 +19,7 @@ class Tweet: NSObject {
     var name: NSString?
     var screenName: NSString?
     var favorited: Bool = false
+    var retweeted: Bool = false
     var inReplyToUserId: NSString?
     
     override init() {
@@ -40,6 +41,7 @@ class Tweet: NSObject {
         }
         
         favorited = (dictionary["favorited"] as? Bool)!
+        retweeted = (dictionary["retweeted"] as? Bool)!
         inReplyToUserId = dictionary["in_reply_to_user_id"] as? String
         
         let user = User.init(dictionary: dictionary["user"] as! NSDictionary)

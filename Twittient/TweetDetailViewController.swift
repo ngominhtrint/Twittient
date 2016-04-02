@@ -20,10 +20,13 @@ class TweetDetailViewController: UIViewController {
     @IBOutlet weak var numberFavoritesLabel: UILabel!
     @IBOutlet weak var likeButton: UIButton!
     @IBOutlet weak var avatarImage: UIImageView!
+    @IBOutlet weak var retweetButton: UIButton!
 
     var tweet: Tweet?
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        avatarImage.layer.cornerRadius = 3.0
         
         showData()
         
@@ -49,6 +52,15 @@ class TweetDetailViewController: UIViewController {
             let image = UIImage(named: "unlike.png")! as UIImage
             likeButton.setImage(image, forState: .Normal)
         }
+        
+        let isRetweeted = tweet!.retweeted
+        if isRetweeted {
+            let image = UIImage(named: "retweeted.png")! as UIImage
+            retweetButton.setImage(image, forState: .Normal)
+        } else {
+            let image = UIImage(named: "retweet.png")! as UIImage
+            retweetButton.setImage(image, forState: .Normal)
+        }
 
     }
     
@@ -58,15 +70,44 @@ class TweetDetailViewController: UIViewController {
     }
 
     @IBAction func onReplyClicked(sender: UIButton) {
-        
+
     }
     
     @IBAction func onRetweetClicked(sender: UIButton) {
-    
+        let id = tweet?.id as! String
+        let isRetweeted = (tweet?.retweeted)! as Bool
+        let retweetEnum: TwitterClient.Retweet
+        
+        if isRetweeted {
+            retweetEnum = TwitterClient.Retweet.Unretweet
+        } else {
+            retweetEnum = TwitterClient.Retweet.Retweet
+        }
+        
+        TwitterClient.shareInstance.retweet(id, retweet: retweetEnum, success: { (tweet: Tweet) -> () in
+                self.tweet = tweet
+                self.showData()
+            }) { (error: NSError) -> () in
+            print("\(error)")
+        }
     }
     
     @IBAction func onLikeClicked(sender: UIButton) {
-    
+        let id = tweet?.id as! String
+        let isFavorite = (tweet?.favorited)! as Bool
+        let favoriteEnum: TwitterClient.Favorite
+        if isFavorite {
+            favoriteEnum = TwitterClient.Favorite.Unlike
+        } else {
+            favoriteEnum = TwitterClient.Favorite.Like
+        }
+
+        TwitterClient.shareInstance.favorite(id, favorite: favoriteEnum, success: { (tweet: Tweet) -> () in
+            self.tweet = tweet
+            self.showData()
+        }) { (error: NSError) -> () in
+            print("\(error)")
+        }
     }
     
     func dateFromString(date: NSDate, format: String) -> String {
@@ -84,7 +125,6 @@ class TweetDetailViewController: UIViewController {
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-
         let replyViewController = segue.destinationViewController as! ReplyViewController
         replyViewController.tweet = self.tweet
         replyViewController.isReplyMessage = true
